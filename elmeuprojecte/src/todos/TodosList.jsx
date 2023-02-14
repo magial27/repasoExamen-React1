@@ -8,7 +8,7 @@ import { TodoList } from './TodoList';
 
 const TodosList = () => {
   let [ todos, setTodos] = useState([]);
-  let { usuari, setUsuari} = useContext(UserContext)
+  let { usuari, setUsuari, idUser, setIdUser } = useContext(UserContext)
   let [refresh,setRefresh] = useState(false)
 
   const getTodos = async (e) => {
@@ -33,33 +33,32 @@ const TodosList = () => {
       }
     };
 
-    // const deleteTodo = async (e,id) =>{
-    //   e.preventDefault();
-    //   try{
-    //     const data = await fetch("http://localhost:3004/todos" + id, {
-    //       headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //       },
-    //       method: "DELETE",
-    //   })
+    const deleteTodo = async (e,id) =>{
+      e.preventDefault();
+      try{
+        const data = await fetch("http://localhost:3004/todos/" + id, {
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
+          method: "DELETE",
+      })
   
-    //     const resposta = await data.json();
-    //     console.log(resposta);
+        const resposta = await data.json();
+        console.log(resposta);
 
-    //       setRefresh(!refresh);
-    //       alert("Place eliminat correctament");
-    //       console.log("Place eliminat correctament");
+          setRefresh(!refresh);
+          console.log("Place eliminat correctament");
   
-    //   }catch {
-    //     console.log(data);
-    //     console.log("catch");
-    //   }
-    // }
+      }catch {
+
+        console.log("catch");
+      }
+    }
 
     useEffect(()=>{
       getTodos();
-  }, [])
+  }, [refresh])
 
 return (
   <>
@@ -73,13 +72,12 @@ return (
           <th><h1>ID USER</h1></th>
           <th><h1>TITLE</h1></th>
           <th><h1>COMPLETED</h1></th>
-          <th colSpan={4}><h1>ACTIONS</h1></th>
+          <th colSpan={3}><h1>ACTIONS</h1></th>
         </tr>
       </thead>
       <tbody>
-      {todos.map((todo) => (
-        
-          (<tr  key={todo.id}><TodoList todo={todo} /></tr>)
+      {todos.map((todo) => ( 
+          (<tr  key={todo.id}><TodoList todo={todo} deleteTodo={deleteTodo}/></tr>)
         ))}
 
       </tbody>

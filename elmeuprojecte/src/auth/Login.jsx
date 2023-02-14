@@ -5,17 +5,12 @@ import { useNavigate } from "react-router-dom";
 
 export default function Login({ setCanvi }) {
 
-  let {usuari, setUsuari} = useContext(UserContext);
+  let {usuari, setUsuari,idUser, setIdUser} = useContext(UserContext);
   let [correu, setCorreu] = useState("");
   let [password, setPassword] = useState("");
-  let [error, setError] = useState("");
-  let [resposta, setResposta] = useState("");
-
-  let navigate = useNavigate();
 
   const sendLogin = async (e) => {
     e.preventDefault();
-
     try {
       const data = await fetch("http://localhost:3004/users?email="+ correu, {
         headers: {
@@ -24,15 +19,13 @@ export default function Login({ setCanvi }) {
         },
         method: "GET",
       });
-
       const resposta = await data.json();
-      console.log(resposta);
-      setUsuari(resposta[0].email);
-
-      setResposta(resposta)
-      console.log(usuari)
-      
-      console.log(password,correu)
+      if (password == resposta[0].password){
+        setUsuari(resposta[0].email);
+        setIdUser(resposta[0].id)
+      }else{
+        alert("Contraseña erronea");
+      }
     } catch {
       console.log("Error");
       //alert("catch");
@@ -76,7 +69,6 @@ export default function Login({ setCanvi }) {
             </svg>
           </p>
         </div>
-        <div>{ error ? (<div className="mensaje-error"> {error}</div>) : (<></>)}</div>
       </div>            
       <svg xmlns="http://www.w3.org/2000/svg" className="icons">
         <symbol id="icon-arrow-right" viewBox="0 0 1792 1792">
